@@ -1,0 +1,342 @@
+:root {
+    --bg-main: #181d24;
+    --bg-sidebar: #12161c;
+    --card-bg: #212832;
+    --text-color: #e0e0e0;
+    --text-muted: #8892b0;
+    --accent-income: #00e676;
+    --accent-expense: #ff5252;
+    --accent-primary: #00bcd4;
+    --border-color: #2c3542;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body.dark-theme {
+    background-color: var(--bg-main);
+    color: var(--text-color);
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Верхня шапка сайту (Header) */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--card-bg);
+    padding: 15px 30px;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Кнопка створення нової транзакції у шапці */
+.btn-new-transaction {
+    background-color: var(--accent-primary);
+    color: #12161c;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-new-transaction:hover {
+    opacity: 0.9;
+}
+
+/* Налаштування загального контейнера контенту, щоб header був зверху */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Бічне меню (Sidebar) */
+.sidebar {
+    width: 220px;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 40px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu-item {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.menu-item:hover, .menu-item.active {
+    background-color: var(--card-bg);
+    color: #fff;
+}
+
+.menu-item.logout {
+    margin-top: auto;
+    color: var(--accent-expense);
+}
+
+/* Основний контент */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Верхня панель з балансом і графіком */
+.top-dashboard {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.balance-display .label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.balance-display h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-top: 5px;
+}
+
+.chart-container {
+    height: 90px;
+    position: relative;
+}
+
+.totals-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: right;
+}
+
+.summary-item span {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.summary-item strong {
+    font-size: 16px;
+    display: block;
+}
+
+.summary-item.expense strong { color: var(--accent-expense); }
+.summary-item.income strong { color: var(--accent-income); }
+
+/* Сітка категорій */
+.categories-grid-section h3, .transactions-section h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+}
+
+.category-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.category-card:hover {
+    border-color: var(--accent-primary);
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    border: 2px solid transparent;
+}
+
+.icon-circle.income { background-color: rgba(0, 230, 118, 0.2); border-color: var(--accent-income); color: var(--accent-income); }
+.icon-circle.expense { background-color: rgba(255, 82, 82, 0.2); border-color: var(--accent-expense); color: var(--accent-expense); }
+
+.cat-name {
+    display: block; 
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.cat-type {
+    display: block; 
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Таблиця транзакцій */
+.table-responsive {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.styled-table th, .styled-table td {
+    padding: 12px 20px;
+    font-size: 14px;
+}
+
+.styled-table th {
+    background-color: rgba(0,0,0,0.1);
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.styled-table tr:not(:last-child) td {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.badge.income { background: rgba(0, 230, 118, 0.15); color: var(--accent-income); }
+.badge.expense { background: rgba(255, 82, 82, 0.15); color: var(--accent-expense); }
+
+.income { color: var(--accent-income); font-weight: 650; }
+.expense { color: var(--accent-expense); font-weight: 650; }
+
+.btn-action {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.btn-action:hover {
+    background-color: var(--border-color);
+}
+
+.btn-action.delete {
+    color: var(--accent-expense);
+    border-color: rgba(255, 82, 82, 0.3);
+}
+
+/* Обгортка для сторінок авторизації (центрування) */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.auth-card {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.form-group input, .form-group select {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 8px;
+    color: var(--text-color);
+}
+
+.btn-submit {
+    background-color: var(--accent-primary);
+    color: #12161c;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-submit:hover {
+    opacity: 0.9;
+}

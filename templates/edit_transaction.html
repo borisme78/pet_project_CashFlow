@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Transaction - CashFlow{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 0 auto; width: 100%;">
+    <div class="auth-card" style="width: 100%;">
+        <h3 style="color: #fff; margin-bottom: 10px;">Edit Transaction</h3>
+        
+        <!-- Форма оновлення існуючої транзакції -->
+        <form method="POST">
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" step="0.01" id="amount" name="amount" value="{{ transaction.amount }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="type">Type</label>
+                <select id="type" name="type" required>
+                    <option value="expense" {% if transaction.type == 'expense' %}selected{% endif %}>Expense</option>
+                    <option value="income" {% if transaction.type == 'income' %}selected{% endif %}>Income</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" value="{{ transaction.date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    {% for cat in categories %}
+                    <option value="{{ cat.name }}" {% if transaction.category == cat.name %}selected{% endif %}>
+                        {{ cat.name }} ({{ cat.type }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" value="{{ transaction.description }}">
+            </div>
+
+            <button type="submit" class="btn-submit" style="width: 100%; margin-top: 10px;">Update Transaction</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="{{ url_for('index') }}" class="btn-action">Cancel</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

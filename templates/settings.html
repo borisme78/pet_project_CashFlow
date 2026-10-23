@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - CashFlow{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 30px; max-width: 800px;">
+    
+    <!-- Форма створення нової категорії -->
+    <div class="auth-card" style="width: 100%;">
+        <h3 style="color: #fff; margin-bottom: 15px;">Add Category</h3>
+        <form method="POST">
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="name">Category Name</label>
+                <input type="text" id="name" name="name" required placeholder="Name...">
+            </div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="type">Type</label>
+                <select id="type" name="type" required>
+                    <option value="expense">Expense</option>
+                    <option value="income">Income</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit">Create Category</button>
+        </form>
+    </div>
+
+    <!-- Таблиця управління категоріями -->
+    <div class="auth-card" style="width: 100%;">
+        <h3 style="color: #fff; margin-bottom: 15px;">Manage Categories</h3>
+        <div class="table-responsive">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in categories %}
+                    <tr>
+                        <form action="{{ url_for('edit_category', category_id=cat.id) }}" method="POST">
+                            <td>
+                                <input type="text" name="name" value="{{ cat.name }}" style="background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; padding: 5px; border-radius: 4px;" required>
+                            </td>
+                            <td>
+                                <select name="type" style="background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; padding: 5px; border-radius: 4px;" required>
+                                    <option value="expense" {% if cat.type == 'expense' %}selected{% endif %}>Expense</option>
+                                    <option value="income" {% if cat.type == 'income' %}selected{% endif %}>Income</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button type="submit" class="btn-action">Save</button>
+                        </form>
+                                <form action="{{ url_for('delete_category', category_id=cat.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn-action delete" onclick="return confirm('Delete category?')">Delete</button>
+                                </form>
+                            </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Форма зміни пароля користувача -->
+    <div class="auth-card" style="width: 100%;">
+        <h3 style="color: #fff; margin-bottom: 15px;">Change Password</h3>
+        <form action="{{ url_for('change_password') }}" method="POST">
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="old_password">Old Password</label>
+                <input type="password" id="old_password" name="old_password" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="new_password">New Password</label>
+                <input type="password" id="new_password" name="new_password" required>
+            </div>
+            <button type="submit" class="btn-submit">Update Password</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

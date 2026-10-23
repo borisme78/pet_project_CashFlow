@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}CashFlow{% endblock %}</title>
+    <!-- Підключення стилів -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <!-- Підключення Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block head %}{% endblock %}
+  </head>
+  <body class="dark-theme">
+    <div class="app-container">
+      <!-- Тільки навігаційне бічне меню -->
+      <aside class="sidebar">
+        <div class="logo">CashFlow</div>
+        <nav class="menu">
+          <a
+            href="{{ url_for('index') }}"
+            class="menu-item {% if request.endpoint == 'index' %}active{% endif %}"
+            >📊 Dashboard</a
+          >
+          <a
+            href="#"
+            class="menu-item {% if request.endpoint == 'budgets' %}active{% endif %}"
+            >🎯 Budgets</a
+          >
+          <a href="#" class="menu-item">💳 Accounts</a>
+          <a href="#" class="menu-item">💸 Transactions</a>
+          <a
+            href="#"
+            class="menu-item {% if request.endpoint == 'analytics' %}active{% endif %}"
+            >📈 Analytics</a
+          >
+          <a
+            href="{{ url_for('settings') }}"
+            class="menu-item {% if request.endpoint == 'settings' %}active{% endif %}"
+            >⚙️ Settings</a
+          >
+          <a href="{{ url_for('logout') }}" class="menu-item logout"
+            >🚪 Logout</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Центральна область (Шапка + Контент) -->
+      <div
+        style="
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          overflow: hidden;
+        "
+      >
+        <!-- Верхня шапка сайту (Header) з кнопкою додавання -->
+        <header class="main-header">
+          <span class="header-title"
+            >{% block header_title %}Overview{% endblock %}</span
+          >
+          <a href="{{ url_for('add_transaction') }}" class="btn-new-transaction"
+            >+ New Transaction</a
+          >
+        </header>
+
+        <!-- Основний контент сторінок -->
+        <main class="main-content">{% block content %}{% endblock %}</main>
+      </div>
+    </div>
+
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

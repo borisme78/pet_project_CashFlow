@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CashFlow{% endblock %}
+
+{% block content %}
+<!-- Верхня панель з балансом, графіком та зведеними підсумками -->
+<header class="top-dashboard">
+    <div class="balance-display">
+        <span class="label">Total Balance</span>
+        <h2>{{ "%.2f"|format(balance) }} ₴</h2>
+    </div>
+    
+    <!-- Графік динаміки -->
+    <div class="chart-container">
+        <canvas id="dynamicsChart"></canvas>
+    </div>
+
+    <div class="totals-summary">
+        <div class="summary-item expense">
+            <span>EXPENSES</span>
+            <strong>{{ "%.2f"|format(expenses) }} ₴</strong>
+        </div>
+        <div class="summary-item income">
+            <span>INCOMES</span>
+            <strong>{{ "%.2f"|format(income) }} ₴</strong>
+        </div>
+    </div>
+</header>
+
+<!-- Сітка категорій -->
+<section class="categories-grid-section">
+    <h3>Categories</h3>
+    <div class="categories-grid">
+        {% for cat in categories %}
+        <div class="category-card">
+            <div class="icon-circle {{ cat.type }}">
+                <span>{{ cat.name[0]|upper }}</span>
+            </div>
+            <div class="category-info">
+                <span class="cat-name">{{ cat.name }}</span>
+                <span class="cat-type">{{ 'Income' if cat.type == 'income' else 'Expense' }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Таблиця транзакцій -->
+<section class="transactions-section">
+    <h3>Transactions</h3>
+    <div class="table-responsive">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                <tr>
+                    <td>{{ tx.date }}</td>
+                    <td>{{ tx.category }}</td>
+                    <td><span class="badge {{ tx.type }}">{{ 'Income' if tx.type == 'income' else 'Expense' }}</span></td>
+                    <td class="{{ tx.type }}">{{ "%.2f"|format(tx.amount) }} ₴</td>
+                    <td>{{ tx.description }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_transaction', transaction_id=tx.id) }}" class="btn-action">Edit</a>
+                        <form action="{{ url_for('delete_transaction', transaction_id=tx.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-action delete" onclick="return confirm('Delete transaction?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<!-- СКРИПТ: Ініціалізація графіка динаміки за допомогою Chart.js -->
+<script>
+    const ctx = document.getElementById('dynamicsChart').getContext('2d');
+    const dynamicsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['1', '5', '10', '15', '20', '25', '30'],
+            datasets: [{
+                label: 'Dynamics',
+                data: [500, 1200, 800, 2100, 1500, 900, 1800],
+                backgroundColor: '#00bcd4',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: '#888' } },
+                y: { grid: { color: '#333' }, ticks: { color: '#888' } }
+            }
+        }
+    });
+</script>
+{% endblock %}
