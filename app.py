@@ -200,61 +200,7 @@ def logout():
 @app.route("/")
 @login_required
 def index():
-    current_user_id = session["user_id"]
-
-    selected_type = request.args.get("type")
-    selected_category = request.args.get("category")
-    
-    connection = get_db_connection()
-    try:
-        cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        
-        # Рахуємо загальні доходи та витрати
-        cursor.execute("""
-            SELECT COALESCE(SUM(CASE WHEN type = 'income' THEN amount END), 0.0) AS total_income,
-                   COALESCE(SUM(CASE WHEN type = 'expense' THEN amount END), 0.0) AS total_expense
-            FROM transactions
-            WHERE user_id = %s;
-        """, (current_user_id,))
-        totals = cursor.fetchone()
-        income = totals["total_income"]
-        expenses = totals["total_expense"]
-
-        # Динамічний запит для транзакцій із фільтрацією
-        query = "SELECT * FROM transactions WHERE user_id = %s"
-        params = [current_user_id]
-
-        if selected_type:
-            query += " AND type = %s"
-            params.append(selected_type)
-
-        if selected_category:
-            query += " AND category = %s"
-            params.append(selected_category)
-
-        query += " ORDER BY date DESC;"
-
-        cursor.execute(query, tuple(params))
-        transactions = cursor.fetchall()
-
-        # Отримуємо категорії для випадаючого списку фільтра
-        cursor.execute("SELECT * FROM categories WHERE user_id = %s ORDER BY type, name;", (current_user_id,))
-        categories = cursor.fetchall()
-
-    finally:
-        connection.close()
-
-    balance = income - expenses
-    return flask.render_template(
-        "index.html",
-        balance=balance,
-        income=income,
-        expenses=expenses,
-        transactions=transactions,
-        selected_type=selected_type,
-        selected_category=selected_category,
-        categories=categories,
-    )
+    return render_template("index.html")
 
 
 @app.route("/add-transaction", methods=["GET", "POST"])
@@ -471,6 +417,9 @@ def get_transactions():
     finally:
         connection.close()
 
+    for transaction in transactions:
+        transaction["date"] = transaction["date"].isoformat()
+        
     return flask.jsonify(transactions)
 
 
@@ -576,6 +525,22 @@ def delete_transaction_api(transaction_id):
 
     return flask.jsonify({"id": transaction_id}), 200
 
+@app.route("/api/categories", methods=["GET"])
+@login_required
+def get_categories():
+    current_user_id = session["user_id"]
+    connection = get_db_connection()
+
+    try:
+        cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cursor.execute(""" 
+                        SELECT id, name, type FROM categories WHERE user_id = %s ORDER BY type, name;
+                        """, (current_user_id,))
+        categories = cursor.fetchall()
+    finally:
+        connection.close()
+
+    return flask.jsonify(categories)
 
 # ==================== 7. ЗАПУСК СЕРВЕРА ====================
 

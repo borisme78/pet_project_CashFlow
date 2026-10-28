@@ -2,13 +2,22 @@
 
 {% block title %}Add Transaction - CashFlow{% endblock %}
 
+{% block scripts %}
+<script 
+    type="module"
+    src="{{ url_for('static', filename='js/add-transaction.js') }}"
+></script>
+{% endblock %}
+
 {% block content %}
 <div style="max-width: 500px; margin: 0 auto; width: 100%;">
     <div class="auth-card" style="width: 100%;">
         <h3 style="color: #fff; margin-bottom: 10px;">Add New Transaction</h3>
         
         <!-- Форма для створення нової транзакції -->
-        <form method="POST">
+        <form id="transaction-form" method="POST">
+            <p id="form-error" role="alert" hidden></p>
+            
             <div class="form-group">
                 <label for="amount">Amount</label>
                 <input type="number" step="0.01" id="amount" name="amount" required placeholder="0.00">
