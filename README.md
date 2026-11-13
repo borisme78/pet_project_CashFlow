@@ -33,7 +33,6 @@ The application allows users to record income and expenses, view their transacti
 finance-tracker/
 ├── app.py
 ├── database.py
-├── init_db.py
 ├── init_db.sql
 ├── requirements.txt
 ├── .env.example

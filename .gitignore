@@ -1,5 +1,28 @@
+# Local environment settings (keep the shared example)
 .env
+.env.*
+!.env.example
+
+# Python virtual environments and bytecode
 .venv/
+venv/
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Tool caches and coverage reports
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Logs and temporary editor files
+*.log
+*.swp
+*.swo
+*~
+
+# macOS metadata
 .DS_Store
+._*
