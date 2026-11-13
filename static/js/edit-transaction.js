@@ -1,5 +1,52 @@
 const transactionForm = document.querySelector("#edit-transaction-form");
 const formError = document.querySelector("#form-error");
+const formFields = document.querySelector("#transaction-fields");
+
+function fillTransactionForm(transaction) {
+    // Знаходимо поле суми у формі.
+    const amountInput = transactionForm.querySelector("#amount");
+
+    // Записуємо суму, отриману через API.
+    amountInput.value = transaction.amount;
+
+    transactionForm.querySelector("#type").value = transaction.type;
+    transactionForm.querySelector("#date").value = transaction.date;
+    transactionForm.querySelector("#category").value = transaction.category;
+
+    
+    transactionForm.querySelector("#description").value =
+        transaction.description ?? "";
+}
+
+async function loadTransaction() {
+    const apiUrl = transactionForm.dataset.apiUrl;
+
+    const response = await fetch(apiUrl)
+
+    if (!response.ok) {
+        throw new Error(
+            `Failed to load the transaction: ${response.status}`
+        );
+    }
+
+    const transaction = await response.json();
+
+    if (
+        transaction === null ||
+        typeof transaction !== "object" ||
+        !Number.isInteger(transaction.id)
+    ){
+        throw new Error("The server returned incorrect transaction data.")
+    }
+
+    fillTransactionForm(transaction);
+    formFields.disabled = false;
+}
+
+loadTransaction().catch((error) => {
+    formError.textContent = error.message;
+    formError.hidden = false;
+})
 
 transactionForm.addEventListener('submit', async (event) => {
     event.preventDefault();

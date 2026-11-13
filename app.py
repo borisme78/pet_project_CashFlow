@@ -206,29 +206,32 @@ def index():
 @app.route("/add-transaction", methods=["GET", "POST"])
 @login_required
 def add_transaction():
+
+    if request.method != "POST":
+        return render_template("add_transaction.html")
+    
     current_user_id = session["user_id"]
+
+    amount, transaction_type, date, category, description = (
+        parse_and_validate_transaction(request.form, current_user_id)
+    )
 
     connection = get_db_connection()
     try: 
-        cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        if request.method == "POST":
-            amount, transaction_type, date, category, description = parse_and_validate_transaction(request.form, current_user_id)
-            cursor.execute(
+        cursor = connection.cursor()
+        cursor.execute(
                 """
-                INSERT INTO transactions (amount, type, date, category, description, user_id)
+            INSERT INTO transactions (amount, type, date, category, description, user_id)
                 VALUES (%s, %s, %s, %s, %s, %s);
                 """,
                 (amount, transaction_type, date, category, description, current_user_id),
             )
-            connection.commit()
-            return flask.redirect("/")
-
-        cursor.execute("SELECT * FROM categories WHERE user_id = %s ORDER BY type, name;", (current_user_id,))
-        categories = cursor.fetchall() 
+        
+        connection.commit()
     finally:
         connection.close()
 
-    return flask.render_template("add_transaction.html", categories=categories)
+    return redirect(url_for("index"))
 
 
 @app.route("/edit/<int:transaction_id>", methods=["GET", "POST"])
@@ -466,6 +469,7 @@ def get_transaction(transaction_id):
     finally:
         connection.close()
 
+    transaction["date"] = transaction["date"].isoformat()
     return flask.jsonify(transaction)
 
 
