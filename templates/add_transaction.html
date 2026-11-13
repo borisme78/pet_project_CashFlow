@@ -39,9 +39,7 @@
             <div class="form-group">
                 <label for="category">Category</label>
                 <select id="category" name="category" required>
-                    {% for cat in categories %}
-                    <option value="{{ cat.name }}">{{ cat.name }} ({{ cat.type }})</option>
-                    {% endfor %}
+                    <option value="">Loading category…</option>
                 </select>
             </div>
 
